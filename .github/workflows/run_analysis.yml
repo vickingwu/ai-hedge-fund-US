@@ -6,7 +6,7 @@ on:
       tickers:
         description: 'Stock tickers (comma-separated, e.g. AAPL,MSFT,NVDA)'
         required: true
-        default: 'AAPL,MSFT,NVDA'
+        default: 'BGNE,PDD,TSM'
       model_name:
         description: 'Model name (default: llama-3.3-70b-versatile for Groq)'
         required: true
