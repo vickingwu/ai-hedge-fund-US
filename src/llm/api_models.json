@@ -83,5 +83,25 @@
     "display_name": "Azure Open AI Deployment",
     "model_name": "",
     "provider": "Azure OpenAI"
+  },
+  {
+    "display_name": "Llama 3.3 70B (Groq)",
+    "model_name": "llama-3.3-70b-versatile",
+    "provider": "Groq"
+  },
+  {
+    "display_name": "Llama 3.1 8B (Groq)",
+    "model_name": "llama-3.1-8b-instant",
+    "provider": "Groq"
+  },
+  {
+    "display_name": "Mixtral 8x7B (Groq)",
+    "model_name": "mixtral-8x7b-32768",
+    "provider": "Groq"
+  },
+  {
+    "display_name": "Gemma 2 9B (Groq)",
+    "model_name": "gemma2-9b-it",
+    "provider": "Groq"
   }
 ]
