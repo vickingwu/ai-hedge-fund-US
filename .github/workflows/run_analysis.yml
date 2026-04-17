@@ -8,9 +8,9 @@ on:
         required: true
         default: 'BGNE,PDD,TSM'
       model_name:
-        description: 'Model name (default: llama-3.3-70b-versatile for Groq)'
+        description: 'Model name (default: llama-3.1-8b-instant for Groq)'
         required: true
-        default: 'llama-3.3-70b-versatile'
+        default: 'llama-3.1-8b-instant'
 
 jobs:
   analyze:
@@ -39,7 +39,7 @@ jobs:
         run: |
           poetry run python src/main.py \
             --tickers ${{ github.event.inputs.tickers }} \
-            --analysts-all \
+            --analysts warren_buffett,michael_burry,cathie_wood,stanley_druckenmiller,technical_analyst,fundamentals_analyst,sentiment_analyst,valuation_analyst,growth_analyst,news_sentiment_analyst \
             --model ${{ github.event.inputs.model_name }} \
             --show-reasoning 2>&1 | tee analysis_report.txt
 
