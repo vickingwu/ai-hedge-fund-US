@@ -1,0 +1,73 @@
+name: AI Hedge Fund Analysis
+
+on:
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: 'Stock tickers (comma-separated, e.g. AAPL,MSFT,NVDA)'
+        required: true
+        default: 'AAPL,MSFT,NVDA'
+      model_name:
+        description: 'Model name (default: llama-3.3-70b-versatile for Groq)'
+        required: true
+        default: 'llama-3.3-70b-versatile'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Run AI Hedge Fund
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          FINANCIAL_DATASETS_API_KEY: ${{ secrets.FINANCIAL_DATASETS_API_KEY }}
+        run: |
+          poetry run python src/main.py \
+            --tickers ${{ github.event.inputs.tickers }} \
+            --analysts-all \
+            --model ${{ github.event.inputs.model_name }} \
+            --show-reasoning 2>&1 | tee analysis_report.txt
+
+      - name: Send email report
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.qq.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "AI Hedge Fund Report - ${{ github.event.inputs.tickers }} - ${{ github.run_id }}"
+          to: "[email]"
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            AI Hedge Fund Analysis Report
+            ==============================
+            Tickers: ${{ github.event.inputs.tickers }}
+            Model: ${{ github.event.inputs.model_name }}
+            Time: ${{ github.event.inputs.tickers }}
+
+            See attached file for full report.
+          attachments: analysis_report.txt
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: analysis-report
+          path: analysis_report.txt
